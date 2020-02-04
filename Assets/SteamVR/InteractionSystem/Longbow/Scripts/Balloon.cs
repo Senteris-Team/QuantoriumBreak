@@ -5,7 +5,6 @@
 //=============================================================================
 
 ﻿using UnityEngine;
-using System.Collections;
 
 namespace Valve.VR.InteractionSystem
 {
@@ -112,6 +111,7 @@ namespace Valve.VR.InteractionSystem
 		{
 			SpawnParticles( popPrefab, null );
 			Destroy( gameObject );
+			CoolDataBase.hits++;
 		}
 
 
