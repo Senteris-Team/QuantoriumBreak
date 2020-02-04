@@ -15,13 +15,14 @@ public class HitsTextUpdater : MonoBehaviour
 
     void Update()
     {
-        if (CoolDataBase.startTime == DateTime.MinValue) deltaDateTime = TimeSpan.MinValue;
+        if (CoolDataBase.shots == 0) deltaDateTime = TimeSpan.Zero;
         else deltaDateTime = DateTime.Now - CoolDataBase.startTime;
+        deltaDateTime = TimeSpan.FromSeconds(Math.Round(deltaDateTime.TotalSeconds, 1));
         if (CoolDataBase.hits == 0) KPD = 0;
         else KPD = CoolDataBase.hits * 100 / CoolDataBase.shots;
         myText.text = "Попаданий: " + CoolDataBase.hits +
                     "\nВыстрелов: " + CoolDataBase.shots +
                     "\n" + KPD.ToString() + "%" +
-                    "\n Времени прошло: " + deltaDateTime.TotalSeconds;
+                    "\nВремени прошло: " + deltaDateTime.TotalSeconds+"c";
     }
 }
