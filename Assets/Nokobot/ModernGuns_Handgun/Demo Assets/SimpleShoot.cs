@@ -15,19 +15,30 @@ public class SimpleShoot : MonoBehaviour
     public Transform barrelLocation;
     public Transform casingExitLocation;
 
+    [SerializeField]
+    private GameObject magazineReceiver;
+
+    private Transform magazine;
     private Interactable interactable;
 
     public float shotPower = 100f;
     public float bulletLifeTime = 10f;
-    public short maxBulletsInTheStore = 7;
-    private short bulletsInTheStore;
+    private short bulletsInTheMagazine;
 
     void Start()
     {
         if (barrelLocation == null)
             barrelLocation = transform;
         interactable = GetComponent<Interactable>();
-        bulletsInTheStore = maxBulletsInTheStore;
+        foreach (Transform child in transform)
+        {
+            if (child.tag == "Magazine")
+            {
+                magazine = child;
+                bulletsInTheMagazine = magazine.GetComponent<MagazinStorage>().bulletAmmout;
+                break;
+            }
+        }
     }
 
     void Update()
@@ -44,12 +55,12 @@ public class SimpleShoot : MonoBehaviour
     void Shoot()
     {
         if (CoolDataBase.shots == 0) CoolDataBase.startTime = DateTime.Now;
-        if (bulletsInTheStore != 0)
+        if (bulletsInTheMagazine != 0)
         {
             GameObject bullet;
             GameObject tempFlash;
 
-            bulletsInTheStore--;
+            bulletsInTheMagazine--;
             CoolDataBase.shots++;
 
             bullet = Instantiate(bulletPrefab, barrelLocation.position, barrelLocation.rotation);
@@ -72,27 +83,48 @@ public class SimpleShoot : MonoBehaviour
 
     void RemoveTheMagazine()
     {
-        foreach (Transform child in transform)
-        {
-            if (child.tag == "Magazine")
-            {
-                Rigidbody rigidbody = child.GetComponent<Rigidbody>();
-                rigidbody.isKinematic = false;
-                rigidbody.useGravity = true;
-                StartCoroutine(TurnOnCollisionMagazine(child));
-                break;
-            }
-        }
+        //GameObject.FindGameObjectsWithTag?     
+        
+        Rigidbody rigidbody = magazine.GetComponent<Rigidbody>();
+        rigidbody.isKinematic = false;
+        rigidbody.useGravity = true;
+        magazine.GetComponent<MagazinStorage>().bulletAmmout = bulletsInTheMagazine;
+        bulletsInTheMagazine = 0;
+
+        magazine.GetComponent<Interactable>().enabled = true;
+        StartCoroutine(TurnOnCollisionMagazine());
     }
-    IEnumerator TurnOnCollisionMagazine(Transform child)
+    IEnumerator TurnOnCollisionMagazine()
     {
-        yield return new WaitForSeconds(0.1f);
-        child.GetComponent<MeshCollider>().isTrigger = false;
-        child.transform.parent = null;
+        magazine.transform.Translate(0, -0.15f, 0);
+        yield return new WaitForSeconds(0.15f);
+        magazine.GetComponent<MeshCollider>().isTrigger = false;
+        magazine.transform.parent = null;
+        magazine = null;
     }
 
-    void InsertTheMagazine()
+    void OnTriggerEnter(Collider other)
     {
-        bulletsInTheStore = maxBulletsInTheStore;
+        Debug.Log(other);
+        if (other.tag == "Magazine" && magazine == null) InsertTheMagazine(other);
+    }
+
+    void InsertTheMagazine(Collider magazineCollider)
+    {
+        magazine = magazineCollider.transform;
+
+        MeshCollider mcm = magazine.GetComponent<MeshCollider>();
+        Rigidbody rigidbody = magazine.GetComponent<Rigidbody>();
+        magazine.GetComponent<Interactable>().enabled = false;
+        if (mcm.isTrigger == true) return; // Если он уже успел выпасть, то код продолжается
+
+        mcm.isTrigger = true;
+        rigidbody.isKinematic = true;
+        rigidbody.useGravity = false;
+        magazine.transform.parent = this.gameObject.transform;
+        magazine.transform.localPosition = new Vector3(-0.0005000038f, 0.055f, 0.033f);
+        magazine.transform.localRotation = Quaternion.Euler(0, 90, 11);
+
+        bulletsInTheMagazine = magazine.GetComponent<MagazinStorage>().bulletAmmout;
     }
 }

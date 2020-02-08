@@ -6,6 +6,7 @@ TagManager:
   tags:
   - FxTemporaire
   - Magazine
+  - MagazineReceiver
   layers:
   - Default
   - TransparentFX
