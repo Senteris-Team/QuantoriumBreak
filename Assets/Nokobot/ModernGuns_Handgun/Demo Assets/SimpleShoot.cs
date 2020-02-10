@@ -21,7 +21,7 @@ public class SimpleShoot : MonoBehaviour
     private Transform magazine;
     private Interactable interactable;
 
-    public float shotPower = 100f;
+    public float shotPower = 3333f;
     public float bulletLifeTime = 10f;
     private short bulletsInTheMagazine;
 
@@ -62,17 +62,17 @@ public class SimpleShoot : MonoBehaviour
 
             bulletsInTheMagazine--;
             CoolDataBase.shots++;
-
             bullet = Instantiate(bulletPrefab, barrelLocation.position, barrelLocation.rotation);
             bullet.GetComponent<Rigidbody>().AddForce(barrelLocation.forward * shotPower);
             tempFlash = Instantiate(muzzleFlashPrefab, barrelLocation.position, barrelLocation.rotation);
 
             Destroy(bullet, bulletLifeTime);
             Destroy(tempFlash, 0.5f);
-            //  Instantiate(casingPrefab, casingExitLocation.position, casingExitLocation.rotation).GetComponent<Rigidbody>().AddForce(casingExitLocation.right * 100f);
         }
     }
-
+    /// <summary>
+    /// Без малейшего понятия чё это
+    /// </summary>
     void CasingRelease()
     {
         GameObject casing;
@@ -88,6 +88,7 @@ public class SimpleShoot : MonoBehaviour
         Rigidbody rigidbody = magazine.GetComponent<Rigidbody>();
         rigidbody.isKinematic = false;
         rigidbody.useGravity = true;
+        if (bulletsInTheMagazine == 0 && magazine.GetChild(0) == null) Destroy(magazine.GetChild(0).gameObject);
         magazine.GetComponent<MagazinStorage>().bulletAmmout = bulletsInTheMagazine;
         bulletsInTheMagazine = 0;
 
@@ -97,7 +98,7 @@ public class SimpleShoot : MonoBehaviour
     IEnumerator TurnOnCollisionMagazine()
     {
         magazine.transform.Translate(0, -0.15f, 0);
-        yield return new WaitForSeconds(0.15f);
+        yield return new WaitForSeconds(0.02f); // xз зачем:/
         magazine.GetComponent<MeshCollider>().isTrigger = false;
         magazine.transform.parent = null;
         magazine = null;

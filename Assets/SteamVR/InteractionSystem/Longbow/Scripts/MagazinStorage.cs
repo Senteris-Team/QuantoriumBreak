@@ -5,4 +5,5 @@ using UnityEngine;
 public class MagazinStorage : MonoBehaviour
 {
     public short bulletAmmout = 7;
+
 }

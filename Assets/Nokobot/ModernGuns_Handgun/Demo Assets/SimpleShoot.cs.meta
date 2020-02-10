@@ -3,7 +3,16 @@ guid: 6be84e4d7829855419c06b94e56bd135
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - bulletPrefab: {fileID: 1900734910723676, guid: 67c3c990b6c48af469e31db314977502,
+      type: 3}
+  - casingPrefab: {fileID: 1482960508195586, guid: 91dcfdffdc6d38e47916b9c549e26dac,
+      type: 3}
+  - muzzleFlashPrefab: {fileID: 1782395880954752, guid: e802c9c5b472d2345a808aca4bc81014,
+      type: 3}
+  - barrelLocation: {instanceID: 0}
+  - casingExitLocation: {instanceID: 0}
+  - magazineReceiver: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
